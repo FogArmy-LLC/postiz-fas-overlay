@@ -1,0 +1,371 @@
+/* ==========================================================================
+   FAS Post-It — FogArmy Cosmos Void Design System (Matched 1:1 to fogarmy.com)
+   ========================================================================== */
+:root,
+body,
+body.dark {
+  /* Surface & Background Void */
+  --bg-void: #020305;
+  --bg-cosmos: #05070C;
+  --bg-stage: #04060B;
+  --bg-panel: rgba(9, 12, 20, 0.82);
+  --bg-panel-solid: #070A12;
+  --bg-cell-hover: #070A13;
+
+  /* Architectural Hairlines & Borders */
+  --border-hairline: rgba(255, 255, 255, 0.085);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-glow: rgba(255, 255, 255, 0.22);
+  --bevel-top: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+  /* Typography Colors */
+  --text-primary: #F8FAFC;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
+
+  /* Accent & Status Nodes */
+  --violet: #A78BFA;
+  --indigo: #818CF8;
+  --arc-ice: #7DD3FC;
+  --cyan: #38BDF8;
+  --node-emerald: #34D399;
+  --node-amber: #FBBF24;
+
+  /* Typography Stacks */
+  --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Postiz internal CSS custom properties remapped 1:1 to Cosmos Void */
+  --new-back-drop: rgba(2, 3, 5, 0.86) !important;
+  --new-bgColor: #020305 !important;
+  --new-bgColorInner: #04060B !important;
+  --new-settings: #070A12 !important;
+  --new-border: rgba(255, 255, 255, 0.085) !important;
+  --new-sep: rgba(255, 255, 255, 0.085) !important;
+  --new-bgLineColor: #05070C !important;
+  --new-textItemFocused: #070A13 !important;
+  --new-textItemBlur: #A1A1AA !important;
+  --new-boxFocused: #F8FAFC !important;
+  --new-textColor: 248 250 252 !important;
+  --new-blockSeparator: rgba(255, 255, 255, 0.085) !important;
+  --new-btn-simple: #070A12 !important;
+  --new-btn-text: #F8FAFC !important;
+  --new-btn-primary: #FFFFFF !important;
+  --new-ai-btn: #38BDF8 !important;
+  --new-box-hover: #070A13 !important;
+  --new-table-border: rgba(255, 255, 255, 0.085) !important;
+  --new-table-header: #05070C !important;
+  --new-table-text: #A1A1AA !important;
+  --new-table-text-focused: #7DD3FC !important;
+  --new-small-strips: #05070C !important;
+  --new-big-strips: #020305 !important;
+  --new-col-color: #04060B !important;
+  --new-menu-dots: #71717A !important;
+  --new-menu-hover: #F8FAFC !important;
+}
+
+html,
+body {
+  background-color: var(--bg-void) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-sans) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(125, 211, 252, 0.24);
+  color: #FFFFFF;
+}
+
+h1, h2, h3, .text-\[24px\], .text-\[28px\], .text-\[32px\], .text-\[40px\] {
+  font-family: var(--font-display) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.028em !important;
+  color: var(--text-primary) !important;
+}
+
+/* Remap arbitrary Tailwind hex classes in Postiz auth & app chrome */
+.bg-\[\#0B0A0A\],
+.bg-\[\#0E0E0E\],
+.bg-\[\#121212\],
+.\!bg-primary {
+  background-color: var(--bg-void) !important;
+}
+
+.bg-\[\#1A1919\],
+.bg-sixth,
+.bg-secondary {
+  background-color: var(--bg-panel-solid) !important;
+  border-color: var(--border-hairline) !important;
+  box-shadow: var(--bevel-top) !important;
+}
+
+.border-\[\#2b2a2a\],
+.border-fifth,
+.bg-fifth {
+  border-color: var(--border-hairline) !important;
+}
+
+.text-\[\#FC69FF\] {
+  color: var(--arc-ice) !important;
+}
+
+/* FogArmy Primary Pill CTA (.cta-button: pure crisp white pill + #020305 ink) */
+button[type="submit"],
+.bg-btnPrimary {
+  background: #FFFFFF !important;
+  color: #020305 !important;
+  font-family: var(--font-sans) !important;
+  text-transform: none !important;
+  letter-spacing: -0.01em !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  border-radius: 999px !important;
+  border: 1px solid #FFFFFF !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.55) !important;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease !important;
+}
+
+button[type="submit"] *,
+.bg-btnPrimary * {
+  color: #020305 !important;
+}
+
+button[type="submit"]:hover,
+.bg-btnPrimary:hover {
+  background: #E4E4E7 !important;
+  border-color: #E4E4E7 !important;
+  transform: translateY(-1px);
+}
+
+/* Ghost / OAuth Sign-In Pill Button (matches .cta-button.btn-ghost) */
+div.cursor-pointer.bg-white.rounded-\[10px\],
+div.cursor-pointer.bg-white.rounded-\[4px\] {
+  background: rgba(255, 255, 255, 0.035) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 999px !important;
+  font-family: var(--font-sans) !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  box-shadow: var(--bevel-top) !important;
+  transition: background 0.18s ease, border-color 0.18s ease !important;
+}
+
+div.cursor-pointer.bg-white.rounded-\[10px\]:hover,
+div.cursor-pointer.bg-white.rounded-\[4px\]:hover {
+  background: rgba(255, 255, 255, 0.085) !important;
+  border-color: rgba(255, 255, 255, 0.34) !important;
+}
+
+/* Inputs & Consoles */
+input[type="email"],
+input[type="password"],
+input[type="text"],
+textarea,
+select {
+  background-color: var(--bg-stage) !important;
+  border: 1px solid var(--border-hairline) !important;
+  color: var(--text-primary) !important;
+  border-radius: 10px !important;
+  font-family: var(--font-sans) !important;
+  box-shadow: var(--bevel-top) !important;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(125, 211, 252, 0.48) !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12) !important;
+  outline: none !important;
+}
+
+/* Hide upstream Postiz SVG immediately before JS replaces it (zero flash) */
+svg[viewBox="0 0 101 33"] {
+  display: none !important;
+}
+
+/* FogArmy Masthead Lockup (`● FOGARMY | POST-IT`) — exact match to localhost:4321 */
+.fas-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+
+.fas-brand-lockup .fas-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
+  flex-shrink: 0;
+}
+
+.fas-brand-lockup .fas-wordmark {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  color: #F8FAFC;
+  text-transform: uppercase;
+}
+
+.fas-brand-lockup .fas-sep {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.14);
+  flex-shrink: 0;
+}
+
+.fas-brand-lockup .fas-sub {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #A1A1AA;
+}
+
+/* Auth right-hand FogArmy Cosmos Void Showcase Panel */
+.fas-auth-showcase {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+  height: 100%;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.fas-auth-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #BAE6FD;
+}
+
+.fas-auth-kicker-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #7DD3FC;
+  box-shadow: 0 0 10px #7DD3FC;
+}
+
+.fas-auth-headline {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 3.4vw, 44px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.fas-auth-headline .fas-grad {
+  background: linear-gradient(92deg, #C4B5FD 0%, #7DD3FC 52%, #6EE7B7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.fas-auth-sub {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.68;
+  color: var(--text-secondary);
+}
+
+/* Signature 1px Hairline Bento Grid (.hairline-bento-grid from fogarmy.com) */
+.fas-bento-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--border-hairline);
+  border: 1px solid var(--border-hairline);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 6px;
+  box-shadow: var(--bevel-top), 0 30px 80px -20px rgba(0, 0, 0, 0.75);
+}
+
+.fas-bento-cell {
+  background: var(--bg-stage);
+  padding: 18px 20px;
+  transition: background 0.18s ease;
+}
+
+.fas-bento-cell:hover {
+  background: var(--bg-cell-hover);
+}
+
+.fas-bento-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--arc-ice);
+  margin-bottom: 6px;
+}
+
+.fas-bento-title {
+  font-family: var(--font-display);
+  font-size: 15.5px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.fas-bento-desc {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* Subtle AGPL-3.0 Network Source Compliance Bar */
+.fas-oss-footer {
+  position: fixed;
+  right: 14px;
+  bottom: 10px;
+  z-index: 40;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  background: rgba(4, 6, 11, 0.78);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.fas-oss-footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.fas-oss-footer a:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
