@@ -74,7 +74,7 @@
     var bar = document.createElement("div");
     bar.id = "fas-oss-compliance";
     bar.className = "fas-oss-footer";
-    bar.innerHTML = '<a href="/_fas/open-source.html" target="_blank" rel="noopener">Open Source &amp; AGPL-3.0 Source</a>';
+    bar.innerHTML = '<a href="https://github.com/FogArmy-LLC/postiz-fas-overlay" target="_blank" rel="noopener noreferrer">Source on GitHub</a> · <a href="/_fas/open-source.html" target="_blank" rel="noopener noreferrer">Open Source &amp; AGPL-3.0 Source</a>';
     document.body.appendChild(bar);
   }
 
