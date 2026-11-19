@@ -1,0 +1,55 @@
+--- a/apps/backend/src/services/auth/auth.service.ts
++++ b/apps/backend/src/services/auth/auth.service.ts
+@@ -1,3 +1,11 @@
++/**
++ * Corresponding source for the modified `AuthService`, published under AGPL-3.0-only
++ * per the license's network-use (section 13) obligation.
++ *
++ * Base: gitroomhq/postiz-app, apps/backend/src/services/auth/auth.service.ts
++ * See upstream.diff for the exact change against that upstream file, and
++ * build-reproduction.md for how this file maps to the deployed compiled output.
++ */
+ import { Injectable } from '@nestjs/common';
+ import { Provider, User } from '@prisma/client';
+ import { CreateOrgUserDto } from '@gitroom/nestjs-libraries/dtos/auth/create.org.user.dto';
+@@ -173,10 +181,16 @@
+       throw new Error('Invalid provider token');
+     }
+ 
+-    const user = await this._userService.getUserByProvider(
+-      providerUser.id,
+-      provider
+-    );
++    // FAS modification: if no account is linked to this provider yet, fall back
++    // to matching an existing account by email before creating a new org. This
++    // lets a user who first signed up via one OAuth provider (or locally) link
++    // a second provider to the same account instead of ending up with duplicate
++    // orgs under the same email address.
++    const user =
++      (await this._userService.getUserByProvider(providerUser.id, provider)) ||
++      (providerUser.email
++        ? await this._userService.getUserByEmail(providerUser.email)
++        : null);
+     if (user) {
+       return user;
+     }
+@@ -346,10 +360,15 @@
+     if (!user) {
+       throw new Error('Invalid user');
+     }
+-    const checkExists = await this._userService.getUserByProvider(
+-      user.id,
+-      provider as Provider
+-    );
++
++    // FAS modification: same email-fallback linking as loginOrRegisterProvider
++    // above, applied to the OAuth "check if this account already exists" path.
++    const checkExists =
++      (await this._userService.getUserByProvider(
++        user.id,
++        provider as Provider
++      )) ||
++      (user.email ? await this._userService.getUserByEmail(user.email) : null);
+     if (checkExists) {
+       // Existing user signing in via OAuth while holding a valid team invite.
+       // This path bypasses routeAuth, so join the inviting org here too (OAuth
