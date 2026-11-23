@@ -4,12 +4,14 @@ build_corresponding_source_bundle.py — AGPL-3.0 §13 source archive builder.
 
 Builds a reproducible gzip-compressed tar archive of this overlay's
 corresponding source, suitable for serving at:
-  /_brand/postiz-corresponding-source-<version>-<digest>.tar.gz
+  /_brand/postiz-complete-corresponding-source.tar.gz
 
 Usage:
     python3 scripts/build_corresponding_source_bundle.py \\
         --postiz-digest sha256:875e61ac5d0ac43c3dec78a78a7032dfb03d9a8c6d4936ebb18adb606cc207c5 \\
         --postiz-version 2.26.0 \\
+        --overlay-revision cd6ff8160db91ad64ed43f0b8b3c09a0401c2ee8 \\
+        --upstream-revision c92d58be17da1a9bfd8de02bb703c783bf4e5d1b \\
         --out-dir /tmp/brand-bundles
 
 Invariants:
@@ -86,14 +88,24 @@ def _verify_license(repo_root: str) -> None:
         raise ValueError("LICENSE does not appear to be AGPL — verify before bundling")
 
 
-def build_bundle(postiz_digest: str, postiz_version: str, out_dir: str) -> str:
+def build_bundle(
+    postiz_digest: str,
+    postiz_version: str,
+    overlay_revision: str,
+    upstream_revision: str,
+    out_dir: str,
+) -> str:
     if not re.match(r'^sha256:[0-9a-f]{64}$', postiz_digest):
         raise ValueError(f"Invalid digest format: {postiz_digest!r}  (expected sha256:<64 hex chars>)")
 
     _verify_license(REPO_ROOT)
 
     digest_short = postiz_digest[7:15]
-    archive_name = f"postiz-corresponding-source-{postiz_version}-sha256-{digest_short}.tar.gz"
+    for name, revision in (("overlay", overlay_revision), ("upstream", upstream_revision)):
+        if not re.match(r"^[0-9a-f]{40}$", revision):
+            raise ValueError(f"Invalid {name} source revision: {revision!r}")
+
+    archive_name = "postiz-complete-corresponding-source.tar.gz"
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, archive_name)
 
@@ -105,6 +117,9 @@ def build_bundle(postiz_digest: str, postiz_version: str, out_dir: str) -> str:
         "postiz_image_digest": postiz_digest,
         "postiz_version": postiz_version,
         "overlay_repo": "https://github.com/FogArmy-LLC/postiz-fas-overlay",
+        "overlay_source_revision": overlay_revision,
+        "upstream_repo": "https://github.com/gitroomhq/postiz-app",
+        "upstream_source_revision": upstream_revision,
         "built_at_utc": "REPRODUCIBLE",
         "files": [rel for rel, _ in files],
     }
@@ -123,7 +138,7 @@ def build_bundle(postiz_digest: str, postiz_version: str, out_dir: str) -> str:
                 info.gname = ""
                 tf.addfile(info, io.BytesIO(data))
 
-            prefix = f"postiz-corresponding-source-{postiz_version}"
+            prefix = "postiz-complete-corresponding-source"
             _add(f"{prefix}/MANIFEST.json", json.dumps(manifest, indent=2).encode())
             for rel, full in files:
                 with open(full, "rb") as fh:
@@ -149,6 +164,10 @@ def main() -> int:
                         help="Exact sha256 digest of the running Postiz image, e.g. sha256:875e61ac...")
     parser.add_argument("--postiz-version", required=True,
                         help="Postiz version string, e.g. 2.26.0")
+    parser.add_argument("--overlay-revision", required=True,
+                        help="Exact 40-hex revision of FogArmy's overlay source")
+    parser.add_argument("--upstream-revision", required=True,
+                        help="Exact 40-hex revision of the Postiz upstream source")
     parser.add_argument("--out-dir", default="/tmp/brand-bundles",
                         help="Output directory (default: /tmp/brand-bundles)")
     parser.add_argument("--verify-reproducible", action="store_true",
@@ -156,11 +175,23 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        p1 = build_bundle(args.postiz_digest, args.postiz_version, args.out_dir)
+        p1 = build_bundle(
+            args.postiz_digest,
+            args.postiz_version,
+            args.overlay_revision,
+            args.upstream_revision,
+            args.out_dir,
+        )
         if args.verify_reproducible:
             import tempfile, filecmp
             tmp = tempfile.mkdtemp()
-            p2 = build_bundle(args.postiz_digest, args.postiz_version, tmp)
+            p2 = build_bundle(
+                args.postiz_digest,
+                args.postiz_version,
+                args.overlay_revision,
+                args.upstream_revision,
+                tmp,
+            )
             if not filecmp.cmp(p1, p2, shallow=False):
                 print("ERROR: builds are NOT byte-identical", file=sys.stderr)
                 return 1
