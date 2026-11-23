@@ -1,0 +1,18 @@
+{
+  "slug": "synthetic-default",
+  "display_name": "FogArmy Social Pod",
+  "primary_color": "#1d4ed8",
+  "primary_hover_color": "#1e40af",
+  "text_on_primary": "#ffffff",
+  "background_color": "#f8fafc",
+  "surface_color": "#ffffff",
+  "text_primary": "#0f172a",
+  "text_secondary": "#475569",
+  "border_color": "#e2e8f0",
+  "font_family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif",
+  "hgn_wordmark_gated": true,
+  "hgn_custom_css_gated": true,
+  "agpl_public_repo": "https://github.com/FogArmy-LLC/postiz-fas-overlay",
+  "agpl_source_route": "/_brand/open-source.html",
+  "agpl_archive_route_pattern": "/_brand/postiz-corresponding-source-{version}-{digest}.tar.gz"
+}

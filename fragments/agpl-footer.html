@@ -1,0 +1,36 @@
+<!--
+  AGPL-3.0 §13 compliance footer fragment
+  Inject before </body> on /auth/login and the main app shell.
+
+  Requirements:
+  - Link to pod-local /_brand/open-source.html (unauthenticated)
+  - Link to pod-local source archive (unauthenticated download)
+  - Link to public GitHub repo FogArmy-LLC/postiz-fas-overlay
+  - All text >= 4.5:1 contrast (WCAG AA), keyboard focusable, mobile-safe
+  - No secrets, tenant IDs, or raw internal IPs
+
+  Template variables (replace at deploy time by the brand renderer or init script):
+    {{ARCHIVE_URL}}   — pod-local URL e.g. /_brand/postiz-corresponding-source-2.26.0-sha256-875e61ac.tar.gz
+    {{VERSION}}       — Postiz version string e.g. 2.26.0
+    {{DIGEST_SHORT}}  — first 8 hex chars of sha256 image digest e.g. 875e61ac
+-->
+<link rel="stylesheet" href="/_brand/agpl-footer.css">
+
+<footer class="agpl-compliance-footer" role="contentinfo" aria-label="Open source compliance notice">
+  <p class="agpl-compliance-footer__text">
+    This service runs
+    <a href="/_brand/open-source.html"
+       class="agpl-compliance-footer__link"
+       target="_blank"
+       rel="noopener noreferrer">Postiz {{VERSION}} (AGPL-3.0)</a>.
+    Download
+    <a href="{{ARCHIVE_URL}}"
+       class="agpl-compliance-footer__link"
+       download>corresponding source ({{DIGEST_SHORT}})</a>
+    or view
+    <a href="https://github.com/FogArmy-LLC/postiz-fas-overlay"
+       class="agpl-compliance-footer__link"
+       target="_blank"
+       rel="noopener noreferrer">public patches on GitHub</a>.
+  </p>
+</footer>
