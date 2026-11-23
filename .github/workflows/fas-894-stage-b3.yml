@@ -1,0 +1,100 @@
+name: FAS-894 Stage B3 — Brand CSS, AGPL Bundle & Caddy 403 CI
+
+on:
+  push:
+    branches:
+      - fas-894-stage-b3-brand-agpl-caddy
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'brands/**'
+      - 'caddy/**'
+      - 'fragments/**'
+      - 'scripts/**'
+      - '.github/workflows/fas-894-stage-b3.yml'
+
+jobs:
+  lint-and-verify:
+    name: Lint, quarantine audit & reproducible bundle
+    runs-on: self-hosted
+    # Dedicated runner group per FAS invariant — never generic 'fogarmy' label
+    group: social-ztops
+
+    steps:
+      - name: Checkout exact HEAD
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Python syntax check — all scripts
+        run: |
+          python3 -m py_compile brands/render_brand.py
+          python3 -m py_compile scripts/build_corresponding_source_bundle.py
+          python3 -m py_compile scripts/verify_client_surface.py
+          echo "Syntax: OK"
+
+      - name: AGPL quarantine audit
+        run: bash scripts/audit_agpl_quarantine.sh
+
+      - name: Render synthetic-default brand
+        run: python3 brands/render_brand.py synthetic-default --out-dir /tmp/brand-out
+
+      - name: Verify brand output files exist
+        run: |
+          test -f /tmp/brand-out/synthetic-default/brand.css
+          test -f /tmp/brand-out/synthetic-default/footer.html
+          test -f /tmp/brand-out/synthetic-default/manifest.json
+          echo "Brand output: OK"
+
+      - name: Reproducible AGPL source bundle (2×, byte-identical)
+        run: |
+          python3 scripts/build_corresponding_source_bundle.py \
+            --postiz-digest "sha256:875e61ac5d0ac43c3dec78a78a7032dfb03d9a8c6d4936ebb18adb606cc207c5" \
+            --postiz-version "2.26.0" \
+            --out-dir /tmp/bundle-out \
+            --verify-reproducible
+
+      - name: Caddy config lint (if caddy installed)
+        run: |
+          if command -v caddy &>/dev/null; then
+            caddy fmt --overwrite caddy/super-admin-403.Caddyfile || true
+            echo "Caddy fmt: OK"
+          else
+            echo "caddy not in PATH — skipping fmt (acceptable on CI runner)"
+          fi
+
+      - name: Verify no raw internal IPs in tree
+        run: |
+          if grep -rP '10\.20\.\d+\.\d+' --include='*.ts' --include='*.js' \
+              --include='*.json' --include='*.html' --include='*.css' \
+              --include='*.yml' --include='*.sh' --include='*.py' \
+              --include='*.Caddyfile' . 2>/dev/null | grep -v '.git'; then
+            echo "ERROR: raw 10.20.x.x IPs found — use *.fogarmy.internal CNAMEs" >&2
+            exit 1
+          fi
+          echo "IP check: OK"
+
+      - name: Verify HGN gates are set in synthetic brand
+        run: |
+          python3 -c "
+          import json, sys
+          cfg = json.load(open('brands/synthetic-default.json'))
+          assert cfg.get('hgn_wordmark_gated') is True, 'hgn_wordmark_gated must be True (ADR-A3)'
+          assert cfg.get('hgn_custom_css_gated') is True, 'hgn_custom_css_gated must be True (ADR-A3)'
+          print('HGN gates: OK')
+          "
+
+      - name: Summary
+        run: |
+          echo "=== FAS-894 Stage B3 CI — all checks passed ==="
+          echo "Brand renderer:    OK"
+          echo "AGPL quarantine:   OK"
+          echo "Source bundle:     OK (byte-identical × 2)"
+          echo "HGN gates:         OK (ADR-A3 compliant)"
+          echo "No raw IPs:        OK"

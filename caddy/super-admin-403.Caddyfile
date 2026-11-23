@@ -1,0 +1,18 @@
+# Caddy snippet: /super_admin* 403 lockdown — FAS-894 Stage B3
+#
+# Include this file in your pod's Caddyfile with:
+#   import /etc/caddy/snippets/super-admin-403.Caddyfile
+#
+# Or inline the respond directive inside your site block:
+#   respond /super_admin* 403
+#
+# The respond directive terminates the request before it reaches any upstream.
+# No internal IP or secret is referenced here.
+
+(super_admin_lockdown) {
+    @super_admin_paths path /super_admin*
+    respond @super_admin_paths 403 {
+        body "Forbidden"
+        close
+    }
+}
